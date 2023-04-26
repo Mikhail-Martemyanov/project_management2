@@ -8,7 +8,7 @@ class Employee(models.Model):
                  ('consultant', 'Консультант'),]
     name = models.CharField(max_length=100, verbose_name='ФИО сотрудника')
     job_title = models.CharField(max_length=10, choices=JOB_TITLE, default='consultant', verbose_name='Дожность')
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='login')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='login', null=True)
 
     def __str__(self):
         return self.name

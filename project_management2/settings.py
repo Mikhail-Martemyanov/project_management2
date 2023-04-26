@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'employee.apps.EmployeeConfig',
     'message.apps.MessageConfig',
     'task.apps.TaskConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
