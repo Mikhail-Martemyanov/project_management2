@@ -22,15 +22,9 @@ from task.views import TaskViewSet
 
 router = SimpleRouter()
 router.register('employee', EmployeeViewSet)
+router.register('task', TaskViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(router.urls)),
-    # path('task/', include('task.urls')),
-
-    path('task/', TaskViewSet.as_view({'get': 'list'}), name='task-list'),
-    path('task/<int:pk>/', TaskViewSet.as_view({'get': 'retrieve'}), name='task-example'),
-    path('task/<int:pk>/change_status/', TaskViewSet.as_view({'get': 'retrieve', 'put': 'update'}), name='task-status'),
-    path('task/<int:pk>/change_task/', TaskViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='task-change'),
-    path('task/create_task/', TaskViewSet.as_view({'get': 'list', 'post': 'create'}), name='create-task'),
+    path('', include(router.urls)),
 ]

@@ -12,3 +12,9 @@ class IsManager(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         user_employee = Employee.objects.get(id=request.user.id)
         return user_employee.job_title == 'manager'
+
+
+class IsReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
