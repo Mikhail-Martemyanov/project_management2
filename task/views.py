@@ -1,4 +1,6 @@
-from rest_framework import viewsets
+from functools import partial
+
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -14,31 +16,41 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['get', 'put'],
+        methods=['put'],
         permission_classes=(IsTaskForUser,),
-        serializer_class=TaskChangeStatusSerializer
-    )
+        serializer_class=TaskChangeStatusSerializer)
     def change_status(self, request, *args, **kwargs):
         task = self.get_object()
-        serializer = TaskChangeStatusSerializer(task)
+        serializer = TaskChangeStatusSerializer(instance=task, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response(serializer.data)
 
     @action(detail=True,
-            methods=['get', 'put', 'delete'],
+            methods=['put', 'delete'],
             permission_classes=(IsManager,),
             serializer_class=TaskSerializer
             )
     def change_task(self, request, *args, **kwargs):
         task = self.get_object()
-        serializer = TaskSerializer(task)
+
+        if request.method == 'DELETE':
+            self.perform_destroy(task)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        serializer = TaskSerializer(instance=task, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'], permission_classes=(IsManager,),
+    @action(detail=False, methods=['post'],
+            permission_classes=(IsManager,),
             serializer_class=TaskSerializer)
     def create_task(self, request, *args, **kwargs):
-        task = self.get_object()
-        serializer = TaskSerializer(task)
+        serializer = TaskSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response(serializer.data)
